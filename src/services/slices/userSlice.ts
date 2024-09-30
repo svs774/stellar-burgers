@@ -8,17 +8,10 @@ import {
   updateUserApi
 } from '@api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { TUser } from '@utils-types';
-import { deleteCookie, setCookie } from '../../utils/cookie';
+import { TUserState } from '@utils-types';
+import { setCookie } from '../../utils/cookie';
 
-type TUserState = {
-  isLoading: boolean;
-  isAuthChecked: boolean;
-  isAuthenticated: boolean;
-  data: TUser;
-};
-
-const initialState: TUserState = {
+export const initialState: TUserState = {
   isLoading: false,
   isAuthChecked: false,
   isAuthenticated: false,
@@ -34,14 +27,13 @@ export const loginUser = createAsyncThunk(
     const data = await loginUserApi({ email, password });
     setCookie('accessToken', data.accessToken);
     localStorage.setItem('refreshToken', data.refreshToken);
-    return data;
+    return await data;
   }
 );
 
 export const registerUser = createAsyncThunk(
   'user/registerUser',
-  async ({ email, name, password }: TRegisterData) =>
-    await registerUserApi({ email, name, password })
+  async (registerData: TRegisterData) => await registerUserApi(registerData)
 );
 
 export const updateUser = createAsyncThunk(
@@ -49,12 +41,14 @@ export const updateUser = createAsyncThunk(
   async (user: TRegisterData) => await updateUserApi(user)
 );
 
-export const logoutUser = createAsyncThunk('user/logoutUser', async () =>
-  logoutApi()
+export const logoutUser = createAsyncThunk(
+  'user/logoutUser',
+  async () => await logoutApi()
 );
 
-export const getUser = createAsyncThunk('user/getUser', async () =>
-  getUserApi()
+export const getUser = createAsyncThunk(
+  'user/getUser',
+  async () => await getUserApi()
 );
 
 const userSlice = createSlice({
@@ -122,8 +116,6 @@ const userSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(logoutUser.fulfilled, (state) => {
-        localStorage.clear();
-        deleteCookie('accessToken');
         state.data = {
           name: '',
           email: ''

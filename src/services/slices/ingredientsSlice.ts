@@ -1,14 +1,8 @@
 import { getIngredientsApi } from '@api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { TIngredient } from '@utils-types';
+import { TIngredientsState } from '@utils-types';
 
-type TIngredietsState = {
-  ingredients: Array<TIngredient>;
-  isLoading: boolean;
-  error: string | null;
-};
-
-const initialState: TIngredietsState = {
+export const initialState: TIngredientsState = {
   ingredients: [],
   isLoading: false,
   error: null
@@ -41,7 +35,7 @@ const ingredientsSlice = createSlice({
       .addCase(getIngredientsThunk.rejected, (state, action) => {
         state.isLoading = false;
         if (action.error.message) {
-          state.error = action.error.message;
+          state.error = new Error(action.error.message);
         }
       })
       .addCase(getIngredientsThunk.fulfilled, (state, action) => {
