@@ -37,4 +37,23 @@ export type TUser = {
   name: string;
 };
 
+export type TUserState = {
+  isLoading: boolean;
+  isAuthChecked: boolean;
+  isAuthenticated: boolean;
+  data: TUser;
+};
+
 export type TTabMode = 'bun' | 'sauce' | 'main';
+
+export type TConstructorState = {
+  bun?: TConstructorIngredient;
+  ingredients: Array<TConstructorIngredient>;
+};
+
+export type TIngredientsState = {
+  ingredients: Array<TIngredient>;
+  isLoading: boolean;
+  error: Error | null;
+};
+
